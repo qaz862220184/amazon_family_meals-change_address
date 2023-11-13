@@ -72,7 +72,8 @@ class AmazonLocationSession:
         :param to_dict:
         :return:
         """
-        base_url = self.get_base_url()
+        # TODO 或者只对这里进行修改
+        base_url = self.get_address_base_url()
         self.session.mount(base_url, DESAdapter())
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -82,14 +83,6 @@ class AmazonLocationSession:
             self.headers
         )
         cookie = response.cookies
-        # TODO: 这个东西似乎没什么用
-        # for i in range(3):
-        #     if 'session-token' not in cookie:
-        #         response = self._get(
-        #             base_url,
-        #             self.headers
-        #         )
-        #         cookie = response.cookies
         if response.status_code not in self.SUCCESS_STATUS_CODE:
             # 请求错误
             raise ValueError('First step Request failed：' + str(response.status_code))
@@ -209,8 +202,15 @@ class AmazonLocationSession:
         获取基础链接
         :return:
         """
-        # TODO: 后续的基础链接上需要加上language参数, 在config里面添加一个获取语言的方法
-        return 'https://' + self.get_country_value('domain')  # + '/?language=' + self.get_country_value('language')
+        return 'https://' + self.get_country_value('domain')
+
+    def get_address_base_url(self):
+        """
+        获取csrf基础链接
+        :return:
+        """
+        # TODO: 后续的基础链接上需要加上language参数, 在config里面添加一个获取语言的方法 --这个会导致csrf的获取错误
+        return 'https://' + self.get_country_value('domain') + '/?language=' + self.get_country_value('language')
 
     def get_country_value(self, name=None, default=None):
         """
