@@ -210,7 +210,8 @@ class AmazonLocationSession:
         :return:
         """
         # TODO: 后续的基础链接上需要加上language参数, 在config里面添加一个获取语言的方法 --这个会导致csrf的获取错误
-        return 'https://' + self.get_country_value('domain') + '/?language=' + self.get_country_value('language')
+        language = self.get_country_value('language') if self.get_country_value('language') else ''
+        return 'https://' + self.get_country_value('domain') + '/?language=' + language
 
     def get_country_value(self, name=None, default=None):
         """
